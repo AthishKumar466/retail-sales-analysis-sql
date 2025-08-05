@@ -31,7 +31,7 @@ FROM retail_sales
 
 -- Data Cleaning
 SELECT * FROM retail_sales
-WHERE transactions_id IS NULL
+WHERE transaction_id IS NULL
 
 SELECT * FROM retail_sales
 WHERE sale_date IS NULL
@@ -222,6 +222,35 @@ SELECT
     COUNT(*) as total_orders    
 FROM hourly_sale
 GROUP BY shift
+
+SELECT 
+    TO_CHAR(sale_date, 'YYYY-MM') as sale_month,
+    SUM(quantity) as total_quantity,
+    SUM(total_sale) as total_revenue
+FROM retail_sales
+GROUP BY sale_month
+ORDER BY sale_month;
+
+SELECT 
+    customer_id,
+    COUNT(transaction_id) as num_orders,
+    SUM(quantity) as total_items,
+    ROUND(AVG(quantity), 2) as avg_basket_size
+FROM retail_sales
+GROUP BY customer_id
+ORDER BY avg_basket_size DESC;
+
+SELECT 
+    gender,
+    COUNT(*) as num_orders,
+    ROUND(AVG(total_sale), 2) as avg_order_value,
+    SUM(total_sale) as total_revenue
+FROM retail_sales
+GROUP BY gender;
+
+SELECT 
+    COUNT(*) FILTER (WHERE total_sale > 1000) * 100.0 / COUNT(*) as high_value_percentage
+FROM retail_sales;
 
 -- End of project
 
